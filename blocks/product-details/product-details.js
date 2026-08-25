@@ -107,6 +107,8 @@ export default async function decorate(block) {
       </div>
       <div class="product-details__right-column">
         <div class="product-details__header"></div>
+        <div class="product-details__tagline pdp-tagline" aria-label="Promotional offer"></div>
+        <div class="product-details__stock" role="status" aria-live="polite"></div>
         <div class="product-details__price"></div>
         <div class="product-details__gallery"></div>
         <div class="product-details__short-description"></div>
@@ -122,6 +124,7 @@ export default async function decorate(block) {
         </div>
         <div class="product-details__description"></div>
         <div class="product-details__attributes"></div>
+        <div class="product-details__custom-attribute"></div>
       </div>
     </div>
   `);
@@ -143,6 +146,10 @@ export default async function decorate(block) {
   const $addToCartStatus = fragment.querySelector('.product-details__add-to-cart-status');
   const $description = fragment.querySelector('.product-details__description');
   const $attributes = fragment.querySelector('.product-details__attributes');
+  // Tasks
+  const $tagline = fragment.querySelector('.product-details__tagline');
+  const $stock = fragment.querySelector('.product-details__stock');
+  const $metaTitle = fragment.querySelector('.product-details__custom-attribute');
 
   block.replaceChildren(fragment);
 
@@ -341,6 +348,35 @@ export default async function decorate(block) {
       }
     },
   })($addToCart);
+
+  // Tasks
+  if ($tagline) {
+    $tagline.textContent = 'Free shipping on orders over $50';
+  }
+
+  events.on('pdp/data', (product) => {
+    if (!product) return;
+    
+    if (product.inStock) {
+      $stock.textContent = '● In Stock';
+      $stock.className = 'product-details__stock stock-badge stock-badge--in-stock';
+    } else {
+      $stock.textContent = '● Out of Stock';
+      $stock.className = 'product-details__stock stock-badge stock-badge--out-of-stock';
+    }
+    
+    const value = product.metaTitle;
+    
+    if (value) {
+      $metaTitle.innerHTML = `
+        <div class="custom-attribute">
+          <dt>Meta Title Attribute Label</dt>
+          <dd>${value}</dd>
+        </div>
+      `;
+    }
+  }, { eager: true });
+  // End of Tasks
 
   // Lifecycle Events
   events.on('pdp/data', (data) => {
