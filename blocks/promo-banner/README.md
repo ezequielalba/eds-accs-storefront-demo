@@ -24,7 +24,7 @@ No URL parameters are read or written by this block. -->
 
 The block queries commerce data directly via `CS_FETCH_GRAPHQL.fetchGraphQl` (from `scripts/commerce.js`), independent of any dropin:
 
-- `productSearch(phrase: "", filter: [{ attribute: "categoryPath", eq: $categoryPath }], page_size: $pageSize)` — returns `productView` items with `name`, `sku`, `urlKey`, `images`, and (for `SimpleProductView`) `price` (final/regular amounts).
+- `productSearch(phrase: "", filter: [{ attribute: "categoryPath", eq: $categoryPath }], page_size: $pageSize)` — returns `productView` items with `name`, `sku`, `urlKey`, `images` (queried with `roles: []`, i.e. unfiltered — the image with the `image` role is preferred client-side, falling back to the first available image), and (for `SimpleProductView`) `price` (final/regular amounts).
 
 Product links are built with `getProductLink(urlKey, sku)` from `scripts/commerce.js`.
 
@@ -41,7 +41,7 @@ This block does not use localStorage. -->
 ### Rendering Flow
 
 1. **Initialization**: Block renders a heading and a `Loading products...` placeholder immediately.
-2. **Fetch**: `fetchCategoryProducts` requests up to `max-products` items in `category-id` via GraphQL.
+2. **Fetch**: `fetchCategoryProducts` requests up to `max-products` items in `category-path` via GraphQL.
 3. **Render**: On success, each product is rendered as a linked card with image (when available), name, and final price (when available). If no products are returned, an empty-state message (`No products found.`) is shown instead.
 
 ### Error Handling

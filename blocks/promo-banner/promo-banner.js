@@ -14,9 +14,10 @@ async function fetchCategoryProducts (categoryPath, maxProducts) {
 						name
 						sku
 						urlKey
-						images(roles: ["image"]) {
+						images(roles: []) {
 							url
 							label
+							roles
 						}
 						... on SimpleProductView {
 							price {
@@ -73,7 +74,7 @@ export default async function decorate (block) {
 
     productsContainer.innerHTML = products.map((item) => {
       const product = item.productView;
-      const image = product.images?.[0];
+      const image = product.images?.find((img) => img.roles.includes('image')) || product.images?.[0];
       const price = product.price?.final?.amount;
       const productUrl = getProductLink(product.urlKey, product.sku);
       return `
