@@ -1,12 +1,12 @@
 import { readBlockConfig } from '../../scripts/aem.js';
 import { CS_FETCH_GRAPHQL, getProductLink } from '../../scripts/commerce.js';
 
-async function fetchCategoryProducts (categoryId, maxProducts) {
+async function fetchCategoryProducts (categoryPath, maxProducts) {
   const query = `
-		query GetCategoryProducts($categoryId: String!, $pageSize: Int!) {
+		query GetCategoryProducts($categoryPath: String!, $pageSize: Int!) {
 			productSearch(
 				phrase: ""
-				filter: [{ attribute: "categoryIds", eq: $categoryId }]
+				filter: [{ attribute: "categoryPath", eq: $categoryPath }]
 				page_size: $pageSize
 			) {
 				items {
@@ -41,7 +41,7 @@ async function fetchCategoryProducts (categoryId, maxProducts) {
   `;
 
   const { data } = await CS_FETCH_GRAPHQL.fetchGraphQl(query, {
-    variables: { categoryId, pageSize: maxProducts },
+    variables: { categoryPath, pageSize: maxProducts },
   });
 
   return data?.productSearch?.items || [];
@@ -49,7 +49,7 @@ async function fetchCategoryProducts (categoryId, maxProducts) {
 
 export default async function decorate (block) {
   const {
-    'category-id': categoryId = '',
+    'category-path': categoryPath = '',
     heading = 'Featured Products',
     'max-products': maxProductsStr = '4',
   } = readBlockConfig(block);
@@ -64,7 +64,7 @@ export default async function decorate (block) {
   const productsContainer = block.querySelector('.promo-banner__products');
 
   try {
-    const products = await fetchCategoryProducts(categoryId, maxProducts);
+    const products = await fetchCategoryProducts(categoryPath, maxProducts);
 
     if (products.length === 0) {
       productsContainer.innerHTML = '<p>No products found.</p>';

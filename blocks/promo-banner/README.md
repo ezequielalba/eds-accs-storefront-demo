@@ -10,7 +10,7 @@ Block configuration is read via `readBlockConfig(block)`.
 
 | Option | Effect |
 |--------|--------|
-| `category-id` | The category ID used to filter products via the `categoryIds` attribute. Defaults to `''` (empty), which will return no meaningful results unless a valid ID is authored. |
+| `category-path` | The category's URL path (e.g. `outdoor/collections`) used to filter products via the `categoryPath` attribute — the same value used by `product-list-page`'s `urlpath` option, not the category's internal/numeric ID. Defaults to `''` (empty), which will return no meaningful results unless a valid path is authored. |
 | `heading` | Heading text displayed above the product grid. Defaults to `'Featured Products'`. |
 | `max-products` | Maximum number of products to fetch and display. Defaults to `4` if not set or not a valid number. |
 
@@ -24,7 +24,7 @@ No URL parameters are read or written by this block. -->
 
 The block queries commerce data directly via `CS_FETCH_GRAPHQL.fetchGraphQl` (from `scripts/commerce.js`), independent of any dropin:
 
-- `productSearch(phrase: "", filter: [{ attribute: "categoryIds", eq: $categoryId }], page_size: $pageSize)` — returns `productView` items with `name`, `sku`, `urlKey`, `images`, and `price` (final/regular amounts).
+- `productSearch(phrase: "", filter: [{ attribute: "categoryPath", eq: $categoryPath }], page_size: $pageSize)` — returns `productView` items with `name`, `sku`, `urlKey`, `images`, and (for `SimpleProductView`) `price` (final/regular amounts).
 
 Product links are built with `getProductLink(urlKey, sku)` from `scripts/commerce.js`.
 
