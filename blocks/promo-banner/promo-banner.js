@@ -18,10 +18,10 @@ async function fetchCategoryProducts (categoryId, maxProducts) {
               url
               label
             }
-            price {
-              final { amount { value currency } }
-              regular { amount { value currency } }
-            }
+            // price { GQL error: message: "Cannot query field price on type ProductView."
+            //   final { amount { value currency } }
+            //   regular { amount { value currency } }
+            // }
           }
         }
       }
